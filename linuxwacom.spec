@@ -1,19 +1,22 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.7.2
+Version:	0.7.4
 Release:	0.1
 Group:		X11
 License:	GPL/X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}.tar.bz2
-# Source0-md5:	-
-Source1:	10-wacom.rules
-Patch2:		%{name}-fsp.patch
-Patch3:		%{name}-0.7.2-modular-sdk.patch
+Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
+# Source0-md5:	9414aa852c97b8addb32481db04be9e5
+#Source1:	10-wacom.rules
+#Patch2:		%{name}-fsp.patch
+#Patch3:		%{name}-0.7.2-modular-sdk.patch
 URL:		http://linuxwacom.sourceforge.net/
-BuildRequires:	aLotOfWork
-Requires:	inKernel2.6.14NeedsNewHidAndWacomModule
-#BuildRequires:	libX11-devel, libXi-devel, xorg-x11-server-sdk, ncurses-devel
+#BuildRequires:	aLotOfWork
+#Requires:	inKernel2.6.14NeedsNewHidAndWacomModule
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXi-devel
+BuildRequires:	xorg-x11-server-sdk
+BuildRequires:	ncurses-devel
 #Requires:	Xserver, udev >= 030-21
 #ExclusiveArch:	%{ix86} %{x8664} alpha ia64 ppc sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -60,9 +63,9 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q
-%patch2 -p1
-%patch3 -p0
+%setup -q -n %{name}-%{version}-3
+#%patch2 -p1
+#%patch3 -p0
 
 %build
 %{__libtoolize}
@@ -86,8 +89,34 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 	--disable-libwacomxi \
 	--with-xorg-sdk=%{_x11sdkdir} \
 	--with-xlib=%{_x11libdir} \
-	--enable-dlloader
-#	$XSERVER64
+	--enable-dlloader \
+	--with-x \
+	--enable-wacom \
+	--enable-wacdump \
+	--enable-xidump \
+	--enable-libwacomcfg \
+	--enable-xsetwacom \
+	--enable-libwacomxi \
+	--enable-hid \
+	--enable-evdev \
+	--enable-tabletdev \
+	--enable-wacomdrv \
+	--enable-modver \
+	--with-kernel=%{_kernelsrcdir}
+
+
+#	--with-xorg-sdk=dir
+# for 2.4 only	--enable-usbmouse
+# for 2.4 only	--enable-input
+# for 2.4 only	--enable-mousedev
+# --enable-xserver64      Use specified X server bit [default=usually]
+# --enable-mkxincludes    Enable mkxincludes, XF86 dependency builder [default=no]
+#  --with-x-src=dir        Specify X driver build directory
+#  --with-xorg-sdk=dir     Specify Xorg SDK directory
+#  --with-xlib=dir         uses a specified X11R6 directory
+#  --with-tcl=dir          uses a specified tcl directory
+#  --with-tk=dir           uses a specified tk directory
+#  --with-xmoduledir       Specify wacom_drv path explicitly. Implies --enable-dlloader
 
 
 %{__make} \
