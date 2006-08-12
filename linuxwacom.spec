@@ -11,13 +11,14 @@ Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
 #Patch2:		%{name}-fsp.patch
 #Patch3:		%{name}-0.7.2-modular-sdk.patch
 URL:		http://linuxwacom.sourceforge.net/
-#BuildRequires:	aLotOfWork
-#Requires:	inKernel2.6.14NeedsNewHidAndWacomModule
+#BuildRequires:	
+Requires:	inKernel2.6.14NeedsNewHidAndWacomModule
+BuildRequires:	kernel-source
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
-BuildRequires:	xorg-x11-server-sdk
+#BuildRequires:	xorg-x11-server-sdk
 BuildRequires:	ncurses-devel
-#Requires:	Xserver, udev >= 030-21
+Requires:	Xserver, udev >= 030-21
 #ExclusiveArch:	%{ix86} %{x8664} alpha ia64 ppc sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -97,27 +98,22 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 	--enable-xsetwacom \
 	--enable-libwacomxi \
 	--enable-hid \
-	--enable-evdev \
 	--enable-tabletdev \
 	--enable-wacomdrv \
-	--enable-modver \
+	--enable-modver	\
 	--with-kernel=%{_kernelsrcdir}
 
-
-#	--with-xorg-sdk=dir
 # for 2.4 only	--enable-usbmouse
 # for 2.4 only	--enable-input
 # for 2.4 only	--enable-mousedev
+#  for 2.4 --enable-evdev
+#	--with-kernel=%{_kernelsrcdir}
 # --enable-xserver64	Use specified X server bit [default=usually]
 # --enable-mkxincludes	Enable mkxincludes, XF86 dependency builder [default=no]
 # --with-x-src=dir	Specify X driver build directory
-# --with-xorg-sdk=dir	Specify Xorg SDK directory
-# --with-xlib=dir	uses a specified X11R6 directory
 # --with-tcl=dir	uses a specified tcl directory
 # --with-tk=dir		uses a specified tk directory
 # --with-xmoduledir	Specify wacom_drv path explicitly. Implies --enable-dlloader
-
-
 %{__make} \
 	XORG_SDK_DIR=%{_x11sdkdir}
 
