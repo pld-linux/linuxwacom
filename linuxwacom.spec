@@ -12,7 +12,7 @@ Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
 Version:	0.7.4
-Release:	0.1
+Release:	0.2
 Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
@@ -23,28 +23,21 @@ Patch1:		%{name}-xorg-7.patch
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:      kernel%{_alt_kernel}-module-build >= 3:2.6.14}
-%{?with_dist_kernel:BuildRequires:      kernel-source }
-
 BuildRequires:  rpmbuild(macros) >= 1.308
 %endif
 #BuildRequires:	
 Requires(post,postun):  /sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):       %releq_kernel_up
 
 BuildRequires:	tk-devel
 BuildRequires:	tcl-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	ncurses-devel
-Requires:	Xserver
+Requires:	xorg-xserver-server
 Requires:	udev >= 030-21
 #ExclusiveArch:	%{ix86} %{x8664} alpha ia64 ppc sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_x11dir		%{_prefix}
-%define		_x11libdir	%{_x11dir}/%{_lib}
 %define		_x11sdkdir	%(pkg-config --variable=sdkdir xorg-server)
 
 %description
@@ -163,11 +156,11 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d \
 	$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d \
-	$RPM_BUILD_ROOT%{_x11libdir}/xorg/modules/input
+	$RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	x86moduledir=$RPM_BUILD_ROOT%{_x11libdir}/xorg/modules/input
+	x86moduledir=$RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 %if %{with userspace}
 
@@ -187,7 +180,7 @@ install -d \
 
 
 
-install src/wacom_drv.so $RPM_BUILD_ROOT%{_x11libdir}/xorg/modules/input
+install src/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 #install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
 
@@ -201,11 +194,25 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog README NEWS
 %attr(755,root,root) %{_bindir}/wacdump
+%attr(755,root,root) %{_bindir}/wacomcpl*
 %attr(755,root,root) %{_bindir}/xidump
 %attr(755,root,root) %{_bindir}/xsetwacom
 %attr(755,root,root) %{_libdir}/libwacomcfg*.so.*.*.*
-%%attr(755,root,root) %{_x11libdir}/xorg/modules/input/wacom_drv.so
+%attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
+%attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so.0.0.0
+%{_libdir}/TkXInput/libwacomxi.a
+%{_libdir}/TkXInput/libwacomxi.la
+
 #%%{_sysconfdir}/udev/rules.d/10-wacom.rules
+
+#%%files tk
+#/usr/bin/wacomcpl
+#/usr/bin/wacomcpl-exec
+#/usr/lib/TkXInput/libwacomxi.a
+#/usr/lib/TkXInput/libwacomxi.la
+#/usr/lib/TkXInput/libwacomxi.so.0.0.0
+#/usr/lib/TkXInput/pkgIndex.tcl
+
 
 %files devel
 %defattr(644,root,root,755)
