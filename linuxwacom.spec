@@ -74,9 +74,8 @@ Statyczna biblioteka linuxwacom.
 %{__automake}
 
 #X SERVER64=
-#if [ "$(getconf LONG_BIT)" == "64" ]
-#then
-#  XSERVER64=--enable-xserver64
+#if [ "$(getconf LONG_BIT)" == "64" ]; then
+#	XSERVER64=--enable-xserver64
 #fi
 
 #export RPM_LIBDIR=%{_lib}
@@ -109,14 +108,14 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 # for 2.4 only	--enable-usbmouse
 # for 2.4 only	--enable-input
 # for 2.4 only	--enable-mousedev
-# --enable-xserver64      Use specified X server bit [default=usually]
-# --enable-mkxincludes    Enable mkxincludes, XF86 dependency builder [default=no]
-#  --with-x-src=dir        Specify X driver build directory
-#  --with-xorg-sdk=dir     Specify Xorg SDK directory
-#  --with-xlib=dir         uses a specified X11R6 directory
-#  --with-tcl=dir          uses a specified tcl directory
-#  --with-tk=dir           uses a specified tk directory
-#  --with-xmoduledir       Specify wacom_drv path explicitly. Implies --enable-dlloader
+# --enable-xserver64	Use specified X server bit [default=usually]
+# --enable-mkxincludes	Enable mkxincludes, XF86 dependency builder [default=no]
+# --with-x-src=dir	Specify X driver build directory
+# --with-xorg-sdk=dir	Specify Xorg SDK directory
+# --with-xlib=dir	uses a specified X11R6 directory
+# --with-tcl=dir	uses a specified tcl directory
+# --with-tk=dir		uses a specified tk directory
+# --with-xmoduledir	Specify wacom_drv path explicitly. Implies --enable-dlloader
 
 
 %{__make} \
