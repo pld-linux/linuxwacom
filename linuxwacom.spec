@@ -32,6 +32,7 @@ BuildRequires:	tk-devel
 BuildRequires:	tcl-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
+BuildRequires:	xorg-xserver-server-devel
 BuildRequires:	ncurses-devel
 Requires:	xorg-xserver-server
 Requires:	udev >= 030-21
@@ -114,9 +115,9 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 	--enable-wacomdrv \
 	--enable-modver \
 	--with-kernel=%{_kernelsrcdir} \
-	--enable-hid \
 	--enable-wacom
 
+#	--enable-hid
 # for 2.4 only	--enable-usbmouse
 # for 2.4 only	--enable-input
 # for 2.4 only	--enable-mousedev
