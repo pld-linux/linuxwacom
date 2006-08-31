@@ -17,7 +17,8 @@ Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
 # Source0-md5:	9414aa852c97b8addb32481db04be9e5
-#Source1:	10-wacom.rules
+Source1:	linuxwacom-rules
+# Source1-md5:	02d3262b7dd10791b0c74abbaac1b933
 Patch1:		%{name}-xorg-7.patch
 #Patch3:		%{name}-0.7.2-modular-sdk.patch
 URL:		http://linuxwacom.sourceforge.net/
@@ -183,7 +184,7 @@ install -d \
 
 install src/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
-#install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -204,7 +205,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/TkXInput/libwacomxi.a
 %{_libdir}/TkXInput/libwacomxi.la
 
-#%%{_sysconfdir}/udev/rules.d/10-wacom.rules
+%{_sysconfdir}/udev/rules.d/10-wacom.rules
 
 #%%files tk
 #/usr/bin/wacomcpl
@@ -213,7 +214,6 @@ rm -rf $RPM_BUILD_ROOT
 #/usr/lib/TkXInput/libwacomxi.la
 #/usr/lib/TkXInput/libwacomxi.so.0.0.0
 #/usr/lib/TkXInput/pkgIndex.tcl
-
 
 %files devel
 %defattr(644,root,root,755)
