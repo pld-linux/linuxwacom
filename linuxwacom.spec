@@ -18,7 +18,6 @@ License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
 # Source0-md5:	9414aa852c97b8addb32481db04be9e5
 Source1:	linuxwacom-rules
-# Source1-md5:	02d3262b7dd10791b0c74abbaac1b933
 Patch1:		%{name}-xorg-7.patch
 #Patch3:		%{name}-0.7.2-modular-sdk.patch
 URL:		http://linuxwacom.sourceforge.net/
