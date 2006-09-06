@@ -142,7 +142,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
         ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
         ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
 %if %{with dist_kernel}
-        %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts XORG_SDK_DIR=%{_x11sdkdir}
+        %{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts XORG_SDK_DIR=%{_x11sdkdir}
 %else
         install -d o/include/config
         touch o/include/config/MARKER
