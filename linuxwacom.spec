@@ -21,7 +21,6 @@ Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
 # Source0-md5:	9414aa852c97b8addb32481db04be9e5
 Source1:	linuxwacom-rules
 Patch1:		%{name}-xorg-7.patch
-#Patch3:		%{name}-0.7.2-modular-sdk.patch
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:      kernel%{_alt_kernel}-module-build >= 3:2.6.14}
@@ -85,7 +84,6 @@ Statyczna biblioteka linuxwacom.
 %prep
 %setup -q -n %{name}-%{version}-3
 %patch1 -p1
-#%patch3 -p0
 
 %build
 %if %{with userspace}
