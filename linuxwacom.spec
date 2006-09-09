@@ -1,3 +1,5 @@
+#
+# Conditional build:
 %bcond_without  dist_kernel     # allow non-distribution kernel
 %bcond_without  kernel          # don't build kernel modules
 %bcond_without  smp             # don't build SMP module
@@ -25,15 +27,17 @@ URL:		http://linuxwacom.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:      kernel%{_alt_kernel}-module-build >= 3:2.6.14}
 BuildRequires:  rpmbuild(macros) >= 1.308
 %endif
-#BuildRequires:	
-Requires(post,postun):  /sbin/depmod
-
-BuildRequires:	tk-devel
+%if %{with userspace}
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
+BuildRequires:	ncurses-devel
 BuildRequires:	tcl-devel
+BuildRequires:	tk-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-xserver-server-devel
-BuildRequires:	ncurses-devel
+%endif
 Requires:	xorg-xserver-server
 Requires:	udev >= 030-21
 #ExclusiveArch:	%{ix86} %{x8664} alpha ia64 ppc sparc sparc64
@@ -84,6 +88,7 @@ Statyczna biblioteka linuxwacom.
 #%patch3 -p0
 
 %build
+%if %{with userspace}
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -125,9 +130,6 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 # --enable-xserver64	Use specified X server bit [default=usually]
 # --enable-mkxincludes	Enable mkxincludes, XF86 dependency builder [default=no]
 # --with-xmoduledir	Specify wacom_drv path explicitly. Implies --enable-dlloader
-%if %{with userspace}
-
-
 %endif
 
 %if %{with kernel}
@@ -150,7 +152,6 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 
 done
 %endif
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -178,12 +179,11 @@ install -d \
 #%%endif
 #%%endif
 
-
-
-
 install src/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
+
+rm -f $RPM_BUILD_ROOT%{_libdir}/TkXInput/libwacomxi.{la,a}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -200,19 +200,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/xsetwacom
 %attr(755,root,root) %{_libdir}/libwacomcfg*.so.*.*.*
 %attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
-%attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so.0.0.0
-%{_libdir}/TkXInput/libwacomxi.a
-%{_libdir}/TkXInput/libwacomxi.la
+%dir %{_libdir}/TkXInput
+%attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
+%{_libdir}/TkXInput/pkgIndex.tcl
 
 %{_sysconfdir}/udev/rules.d/10-wacom.rules
 
 #%%files tk
-#/usr/bin/wacomcpl
-#/usr/bin/wacomcpl-exec
-#/usr/lib/TkXInput/libwacomxi.a
-#/usr/lib/TkXInput/libwacomxi.la
-#/usr/lib/TkXInput/libwacomxi.so.0.0.0
-#/usr/lib/TkXInput/pkgIndex.tcl
+#%attr(755,root,root) %{_bindir}/wacomcpl
+#%attr(755,root,root) %{_bindir}/wacomcpl-exec
+#%dir %{_libdir}/TkXInput
+#%attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
+#%{_libdir}/TkXInput/pkgIndex.tcl
 
 %files devel
 %defattr(644,root,root,755)
