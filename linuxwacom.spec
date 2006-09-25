@@ -13,12 +13,12 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.7.4
-Release:	0.2
+Version:	0.7.5
+Release:	1
 Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
-# Source0-md5:	9414aa852c97b8addb32481db04be9e5
+# Source0-md5:	6cd04c5fb71f4cc6abb588ad321d628b
 Source1:	linuxwacom-rules
 Patch1:		%{name}-xorg-7.patch
 URL:		http://linuxwacom.sourceforge.net/
@@ -177,7 +177,7 @@ install -d \
 #%%endif
 #%%endif
 
-install src/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
+install src/xdrv/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
 

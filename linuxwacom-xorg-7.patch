@@ -14,8 +14,8 @@
 # version.
 # --- T2-COPYRIGHT-NOTE-END ---
 
---- linuxwacom-0.7.4-3/src/xf86Wacom.h_orig	2006-07-24 08:37:07.035574744 +0200
-+++ linuxwacom-0.7.4-3/src/xf86Wacom.h	2006-07-24 08:37:18.670805920 +0200
+--- linuxwacom-0.7.4-3/src/xdrv/xf86Wacom.h_orig	2006-07-24 08:37:07.035574744 +0200
++++ linuxwacom-0.7.4-3/src/xdrv/xf86Wacom.h	2006-07-24 08:37:18.670805920 +0200
 @@ -64,7 +64,7 @@
  #define NEED_XF86_TYPES
  #if !defined(DGUX)
