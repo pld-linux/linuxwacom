@@ -14,11 +14,11 @@ Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
 Version:	0.7.5
-Release:	1
+Release:	2
 Group:		X11
 License:	GPL/X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-3.tar.bz2
-# Source0-md5:	6cd04c5fb71f4cc6abb588ad321d628b
+Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-4.tar.bz2
+# Source0-md5:	bbf698eba5f391ca6eddb3fd0232f2de
 Source1:	linuxwacom-rules
 Patch1:		%{name}-xorg-7.patch
 URL:		http://linuxwacom.sourceforge.net/
@@ -82,7 +82,7 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q -n %{name}-%{version}-3
+%setup -q -n %{name}-%{version}-4
 %patch1 -p1
 
 %build
@@ -167,18 +167,7 @@ install -d \
 
 %endif
 
-#%%if %{with kernel}
-#install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/MODULE_DIR
-#install MODULE_NAME-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-#        $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/MODULE_DIR/MODULE_NAME.ko
-#%%if %{with smp} && %{with dist_kernel}
-#install MODULE_NAME-smp.ko \
-#        $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/MODULE_DIR/MODULE_NAME.ko
-#%%endif
-#%%endif
-
 install src/xdrv/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
-
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/TkXInput/libwacomxi.{la,a}
@@ -201,7 +190,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/TkXInput
 %attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
 %{_libdir}/TkXInput/pkgIndex.tcl
-
 %{_sysconfdir}/udev/rules.d/10-wacom.rules
 
 #%%files tk
