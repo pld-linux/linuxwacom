@@ -11,7 +11,7 @@
 %endif
 
 Summary:	Wacom Drivers from Linux Wacom Project
-Summary(pl):	Sterowniki Wacom z projektu Linux Wacom Project
+Summary(pl.UTF-8):   Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
 Version:	0.7.5
 Release:	2
@@ -50,14 +50,14 @@ documentation for configuring and running Wacom tablets under the
 Linux operating system. It contains diagnostic applications as well as
 X.org XInput drivers.
 
-%description -l pl
-Linux Wacom Project utrzymuje sterowniki, biblioteki i dokumentacjê do
-konfigurowania i uruchamiania tabletów Wacom pod systemem Linux.
-Zawiera aplikacje diagnostyczne, a tak¿e sterowniki XInput do X.org.
+%description -l pl.UTF-8
+Linux Wacom Project utrzymuje sterowniki, biblioteki i dokumentacjÄ™ do
+konfigurowania i uruchamiania tabletÃ³w Wacom pod systemem Linux.
+Zawiera aplikacje diagnostyczne, a takÅ¼e sterowniki XInput do X.org.
 
 %package devel
 Summary:	linuxwacom developmental header files
-Summary(pl):	Pliki nag³ówkowe linuxwacom
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe linuxwacom
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -65,20 +65,20 @@ Requires:	%{name} = %{version}-%{release}
 Developmental header files required for developing or compiling
 applications for manipulating settings for Wacom tablets.
 
-%description devel -l pl
-Pliki nag³ówkowe potrzebne do tworzenia i kompilowania aplikacji
-modyfikuj±cych ustawienia tabletów Wacom.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe potrzebne do tworzenia i kompilowania aplikacji
+modyfikujÄ…cych ustawienia tabletÃ³w Wacom.
 
 %package static
 Summary:	linuxwacom static library
-Summary(pl):	Statyczna biblioteka linuxwacom
+Summary(pl.UTF-8):   Statyczna biblioteka linuxwacom
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 linuxwacom static library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka linuxwacom.
 
 %prep
