@@ -1,3 +1,5 @@
+# TODO
+# - no package for kernel modules, even if they're built
 #
 # Conditional build:
 %bcond_without  dist_kernel     # allow non-distribution kernel
