@@ -2,31 +2,29 @@
 # - no package for kernel modules, even if they're built
 #
 # Conditional build:
-%bcond_without  dist_kernel     # allow non-distribution kernel
-%bcond_without  kernel          # don't build kernel modules
-%bcond_without  up				# don't build UP module
-%bcond_without  smp             # don't build SMP module
-%bcond_without  userspace       # don't build userspace programs
-%bcond_with     verbose         # verbose build (V=1)
+%bcond_without  dist_kernel	# allow non-distribution kernel
+%bcond_without  kernel		# don't build kernel modules
+%bcond_without  userspace	# don't build userspace programs
+%bcond_with     verbose		# verbose build (V=1)
 
+%define		relver		3
 %if %{without kernel}
-%undefine       with_dist_kernel
+%undefine	with_dist_kernel
 %endif
 
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.7.5
-Release:	2
+Version:	0.7.8
+Release:	1
 Group:		X11
 License:	GPL/X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-4.tar.bz2
-# Source0-md5:	bbf698eba5f391ca6eddb3fd0232f2de
+Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.bz2
+# Source0-md5:	19214c30e68114bb2101a287b11b8f32
 Source1:	linuxwacom-rules
-Patch1:		%{name}-xorg-7.patch
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:      kernel%{_alt_kernel}-module-build >= 3:2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
 BuildRequires:  rpmbuild(macros) >= 1.308
 %endif
 %if %{with userspace}
@@ -85,8 +83,7 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q -n %{name}-%{version}-4
-%patch1 -p1
+%setup -q -n %{name}-%{version}-%{relver}
 
 %build
 %if %{with userspace}
@@ -99,8 +96,6 @@ Statyczna biblioteka linuxwacom.
 #if [ "$(getconf LONG_BIT)" == "64" ]; then
 #	XSERVER64=--enable-xserver64
 #fi
-
-#export RPM_LIBDIR=%{_lib}
 export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 %configure \
 	--with-gtk \
@@ -134,24 +129,7 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 %endif
 
 %if %{with kernel}
-# kernel module(s)
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-        if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-                exit 1
-        fi
-        install -d o/include/linux
-        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-%if %{with dist_kernel}
-        %{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts XORG_SDK_DIR=%{_x11sdkdir}
-%else
-        install -d o/include/config
-        touch o/include/config/MARKER
-        ln -sf %{_kernelsrcdir}/scripts o/scripts
-%endif
-
-done
+%build_kernel_modules -m wacom
 %endif
 
 %install
@@ -166,7 +144,6 @@ install -d \
 	x86moduledir=$RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 
 %if %{with userspace}
-
 
 %endif
 
