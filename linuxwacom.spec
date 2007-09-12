@@ -1,9 +1,13 @@
 # TODO
 # - no package for kernel modules, even if they're built
+# 
+# NOTE
+# - looks that kernel module is mainstream now, probably building it here
+#   should be removed
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
-%bcond_with	kernel		# don't build kernel modules
+%bcond_with	kernel		# build kernel modules
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
@@ -24,8 +28,8 @@ Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.b
 Source1:	linuxwacom-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
-BuildRequires:  rpmbuild(macros) >= 1.308
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+BuildRequires:  rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
 BuildRequires:	autoconf
@@ -85,7 +89,18 @@ Statyczna biblioteka linuxwacom.
 %prep
 %setup -q -n %{name}-%{version}-%{relver}
 
+cat > src/2.6.19/Makefile << EOF
+obj-m += wacom.o
+wacom-objs := wacom_wac.o wacom_sys.o
+%{?debug:CFLAGS += -DCONFIG_MODULE_NAME_DEBUG=1}
+EOF
+cp src/2.6.1{6,9}/wacom_wac.h
+
 %build
+%if %{with kernel}
+%build_kernel_modules -C src/2.6.19 -m wacom
+%endif
+
 %if %{with userspace}
 %{__libtoolize}
 %{__aclocal}
@@ -113,9 +128,8 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 	--enable-xsetwacom \
 	--enable-libwacomxi \
 	--disable-tabletdev \
-	--disable-wacomdrv \
 	--enable-modver \
-	--disable-wacom
+	--enable-wacom
 
 #-with-kernel=%{_kernelsrcdir}
 #-enable-hid
@@ -129,28 +143,21 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 %{__make}
 %endif
 
-%if %{with kernel}
-%build_kernel_modules -m wacom
-%endif
-
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d \
-	$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d \
-	$RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
-
+%if %{with userspace}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	x86moduledir=$RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
+	x86moduledir=%{_libdir}/xorg/modules/input
 
-%if %{with userspace}
+#install src/xdrv/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
+install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
 rm -f $RPM_BUILD_ROOT%{_libdir}/TkXInput/libwacomxi.{la,a}
 %endif
 
 %if %{with kernel}
-install src/xdrv/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
+%install_kernel_modules -m src/2.6.19/wacom -d misc
 %endif
 
 %clean
@@ -160,6 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun	-p /sbin/ldconfig
 
 %files
+%if %{with userspace}
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog README NEWS
 %attr(755,root,root) %{_bindir}/wacdump
@@ -171,10 +179,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
 %{_libdir}/TkXInput/pkgIndex.tcl
 %{_mandir}/man4/*.4*
-%if %{with kernel}
 %attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
 %{_sysconfdir}/udev/rules.d/10-wacom.rules
-%endif
 
 #%%files tk
 #%attr(755,root,root) %{_bindir}/wacomcpl
@@ -193,3 +199,4 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libwacomcfg*.a
+%endif
