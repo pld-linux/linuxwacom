@@ -11,7 +11,7 @@
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
-%define		relver		3
+%define		relver		1
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
@@ -19,12 +19,12 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.7.8
+Version:	0.7.9
 Release:	1
 Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.bz2
-# Source0-md5:	19214c30e68114bb2101a287b11b8f32
+# Source0-md5:	be913dc4a99d31c44ceb085842778b28
 Source1:	linuxwacom-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
