@@ -11,7 +11,7 @@
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
-%define		relver		3
+%define		relver		6
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
@@ -19,13 +19,14 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.7.8
+Version:	0.7.9
 Release:	1
 Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.bz2
-# Source0-md5:	19214c30e68114bb2101a287b11b8f32
+# Source0-md5:	b224e4f393c1a2b412e5510abc149c2d
 Source1:	linuxwacom-rules
+Patch0:		%{name}-dlloader.patch
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -88,6 +89,7 @@ Statyczna biblioteka linuxwacom.
 
 %prep
 %setup -q -n %{name}-%{version}-%{relver}
+%patch0 -p1
 
 cat > src/2.6.19/Makefile << EOF
 obj-m += wacom.o
@@ -126,20 +128,10 @@ export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
 	--enable-xidump \
 	--enable-libwacomcfg \
 	--enable-xsetwacom \
-	--enable-libwacomxi \
-	--disable-tabletdev \
-	--enable-modver \
-	--enable-wacom
-
-#-with-kernel=%{_kernelsrcdir}
-#-enable-hid
-# for 2.4 only	--enable-usbmouse
-# for 2.4 only	--enable-input
-# for 2.4 only	--enable-mousedev
-# for 2.4 only  --enable-evdev
+	--enable-tabletdev \
+	--enable-wacomdrv
 # --enable-xserver64	Use specified X server bit [default=usually]
 # --enable-mkxincludes	Enable mkxincludes, XF86 dependency builder [default=no]
-# --with-xmoduledir	Specify wacom_drv path explicitly. Implies --enable-dlloader
 %{__make}
 %endif
 
@@ -179,6 +171,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
 %{_libdir}/TkXInput/pkgIndex.tcl
 %{_mandir}/man4/*.4*
+%attr(755,root,root) %{_libdir}/libwacomcfg.so.0
 %attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
 %{_sysconfdir}/udev/rules.d/10-wacom.rules
 
