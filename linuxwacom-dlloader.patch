@@ -1,0 +1,14 @@
+--- linuxwacom-0.7.9-6/configure.in.orig	2008-01-21 06:36:24.000000000 +0000
++++ linuxwacom-0.7.9-6/configure.in	2008-01-21 06:37:29.000000000 +0000
+@@ -712,11 +712,9 @@
+ 	AC_HELP_STRING([--enable-dlloader], [Use dlloader  [[default=usually]]]),
+ 	WCM_OPTION_DLLOADER=$enableval)
+ if test "$WCM_OPTION_DLLOADER" = yes; then
+-	if test -f $WCM_MODDIR/evdev_drv.so -o -f $WCM_MODDIR/kbd_drv.so -o -f $WCM_MODDIR/mouse_drv.so; then
+ 		WCM_OPTION_DLLOADER=yes
+ 	else
+ 		WCM_OPTION_DLLOADER=no
+-	fi
+ fi
+ AC_MSG_RESULT($WCM_OPTION_DLLOADER)
+ AM_CONDITIONAL(WCM_DLLOADER, test "$WCM_OPTION_DLLOADER" == "yes")
