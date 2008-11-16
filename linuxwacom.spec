@@ -20,7 +20,7 @@ Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
 Version:	0.7.9
-Release:	3
+Release:	4
 Group:		X11
 License:	GPL/X11
 Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.bz2
