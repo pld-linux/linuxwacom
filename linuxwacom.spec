@@ -1,9 +1,5 @@
-# TODO
-# - no package for kernel modules, even if they're built
 # 
-# NOTE
-# - looks that kernel module is mainstream now, probably building it here
-#   should be removed
+# NOTE: kernel module is in mainstream now
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
@@ -11,7 +7,6 @@
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
-%define		relver		3
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
@@ -19,12 +14,12 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.8.0
+Version:	0.8.2
 Release:	1
 Group:		X11
 License:	GPL/X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-%{relver}.tar.bz2
-# Source0-md5:	629698976f9eb7d861802b22669c5aee
+Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}.tar.bz2
+# Source0-md5:	cb0647197556c3ab9079b37966a5adc1
 Source1:	linuxwacom-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
@@ -40,6 +35,7 @@ BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
+BuildRequires:	xorg-lib-libpciaccess-devel
 BuildRequires:	xorg-xserver-server-devel
 %endif
 Requires:	xorg-xserver-server
@@ -87,7 +83,7 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q -n %{name}-%{version}-%{relver}
+%setup -q
 
 cat > src/2.6.19/Makefile << EOF
 obj-m += wacom.o
