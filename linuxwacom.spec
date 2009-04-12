@@ -1,4 +1,4 @@
-# 
+#
 # NOTE: kernel module is in mainstream now
 #
 # Conditional build:
@@ -14,17 +14,17 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.8.2
+Version:	0.8.3
 Release:	1
-Group:		X11
 License:	GPL/X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}.tar.bz2
-# Source0-md5:	cb0647197556c3ab9079b37966a5adc1
-Source1:	linuxwacom-rules
+Group:		X11
+Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-2.tar.bz2
+# Source0-md5:	3126718ca78a0c35c3d62d25817c8ece
+Source1:	%{name}-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-BuildRequires:  rpmbuild(macros) >= 1.379
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
 BuildRequires:	autoconf
@@ -38,8 +38,8 @@ BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libpciaccess-devel
 BuildRequires:	xorg-xserver-server-devel
 %endif
-Requires:	xorg-xserver-server
 Requires:	udev-core >= 030-21
+Requires:	xorg-xserver-server
 #ExclusiveArch:	%{ix86} %{x8664} alpha ia64 ppc sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -52,8 +52,8 @@ Linux operating system. It contains diagnostic applications as well as
 X.org XInput drivers.
 
 %description -l pl.UTF-8
-Linux Wacom Project utrzymuje sterowniki, biblioteki i dokumentację do
-konfigurowania i uruchamiania tabletów Wacom pod systemem Linux.
+Linux Wacom Project utrzymuje sterowniki, biblioteki i dokumentację
+do konfigurowania i uruchamiania tabletów Wacom pod systemem Linux.
 Zawiera aplikacje diagnostyczne, a także sterowniki XInput do X.org.
 
 %package devel
@@ -83,7 +83,7 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-2
 
 cat > src/2.6.19/Makefile << EOF
 obj-m += wacom.o
@@ -107,7 +107,7 @@ cp src/2.6.1{6,9}/wacom_wac.h
 #if [ "$(getconf LONG_BIT)" == "64" ]; then
 #	XSERVER64=--enable-xserver64
 #fi
-export CFLAGS="-I%{_includedir}/ncurses %{rpmcflags}"
+export CFLAGS="-I/usr/include/ncurses %{rpmcflags}"
 %configure \
 	--with-gtk \
 	--with-tcl \
@@ -153,6 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun	-p /sbin/ldconfig
 
 %files
+%defattr(644,root,root,755)
 %if %{with userspace}
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog README NEWS
@@ -168,6 +169,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libwacomcfg.so.0
 %attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
 %{_sysconfdir}/udev/rules.d/10-wacom.rules
+%{_libdir}/hal-setup-wacom
+%{_datadir}/hal/fdi/policy/20thirdparty/10-linuxwacom.fdi
 
 #%%files tk
 #%attr(755,root,root) %{_bindir}/wacomcpl
