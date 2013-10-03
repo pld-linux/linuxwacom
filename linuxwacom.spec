@@ -1,11 +1,13 @@
-#
-# NOTE: kernel module is in mainstream now
+# NOTE: this package is deprecated:
+# - kernel module is in mainstream now
+# - driver for xorg-xserver 1.7+ is in xorg-driver-input-wacom.spec
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_with	kernel		# build kernel modules
-%bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
+%bcond_without	userspace	# don't build userspace programs
+%bcond_with	hal		# HAL support (deprecated)
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -14,12 +16,12 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.8.3
+Version:	0.9.7
 Release:	1
 License:	GPL/X11
 Group:		X11
-Source0:	http://dl.sourceforge.net/linuxwacom/%{name}-%{version}-2.tar.bz2
-# Source0-md5:	3126718ca78a0c35c3d62d25817c8ece
+Source0:	http://downloads.sourceforge.net/linuxwacom/%{name}-%{version}.tar.bz2
+# Source0-md5:	de1103591c51a6dfd4805b93d1513384
 Source1:	%{name}-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
@@ -27,16 +29,19 @@ URL:		http://linuxwacom.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.58
 BuildRequires:	automake
+%{?with_hal:BuildRequires:	hal-devel >= 0.5.10}
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
+BuildRequires:	pkgconfig
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libpciaccess-devel
-BuildRequires:	xorg-xserver-server-devel
+BuildRequires:	xorg-xserver-server-devel < 1.7
+%{!?with_hal:BuildConflicts:	hal-devel}
 %endif
 Requires:	udev-core >= 030-21
 Requires:	xorg-xserver-server
@@ -83,18 +88,18 @@ linuxwacom static library.
 Statyczna biblioteka linuxwacom.
 
 %prep
-%setup -q -n %{name}-%{version}-2
+%setup -q
 
-cat > src/2.6.19/Makefile << EOF
+cat > src/2.6.30/Makefile << EOF
 obj-m += wacom.o
 wacom-objs := wacom_wac.o wacom_sys.o
 %{?debug:CFLAGS += -DCONFIG_MODULE_NAME_DEBUG=1}
 EOF
-cp src/2.6.1{6,9}/wacom_wac.h
+#cp src/2.6.1{6,9}/wacom_wac.h
 
 %build
 %if %{with kernel}
-%build_kernel_modules -C src/2.6.19 -m wacom
+%build_kernel_modules -C src/2.6.30 -m wacom
 %endif
 
 %if %{with userspace}
@@ -103,29 +108,23 @@ cp src/2.6.1{6,9}/wacom_wac.h
 %{__autoconf}
 %{__automake}
 
-#X SERVER64=
-#if [ "$(getconf LONG_BIT)" == "64" ]; then
-#	XSERVER64=--enable-xserver64
-#fi
 export CFLAGS="-I/usr/include/ncurses %{rpmcflags}"
 %configure \
+	--enable-libwacomcfg \
+	--enable-libwacomxi \
+	--enable-tabletdev \
+	--enable-wacdump \
+	--enable-wacomdrv \
+	--enable-wacomxi \
+	--enable-xidump \
+	--enable-xsetwacom \
 	--with-gtk \
 	--with-tcl \
 	--with-tk \
-	--enable-wacomxi \
-	--enable-libwacomxi \
-	--with-xorg-sdk \
-	--with-xlib \
-	--enable-dlloader \
 	--with-x \
-	--enable-wacdump \
-	--enable-xidump \
-	--enable-libwacomcfg \
-	--enable-xsetwacom \
-	--enable-tabletdev \
-	--enable-wacomdrv
-# --enable-xserver64	Use specified X server bit [default=usually]
-# --enable-mkxincludes	Enable mkxincludes, XF86 dependency builder [default=no]
+	--with-xlib \
+	--with-xorg-sdk
+
 %{__make}
 %endif
 
@@ -137,13 +136,12 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	x86moduledir=%{_libdir}/xorg/modules/input
 
-#install src/xdrv/wacom_drv.so $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
 install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-wacom.rules
-rm -f $RPM_BUILD_ROOT%{_libdir}/TkXInput/libwacomxi.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/TkXInput/libwacomxi.{la,a}
 %endif
 
 %if %{with kernel}
-%install_kernel_modules -m src/2.6.19/wacom -d misc
+%install_kernel_modules -m src/2.6.30/wacom -d misc
 %endif
 
 %clean
@@ -152,11 +150,10 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%if %{with userspace}
-%defattr(644,root,root,755)
-%doc AUTHORS ChangeLog README NEWS
+%doc AUTHORS ChangeLog README
 %attr(755,root,root) %{_bindir}/wacdump
 %attr(755,root,root) %{_bindir}/wacomcpl*
 %attr(755,root,root) %{_bindir}/xidump
