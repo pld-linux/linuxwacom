@@ -16,12 +16,12 @@
 Summary:	Wacom Drivers from Linux Wacom Project
 Summary(pl.UTF-8):	Sterowniki Wacom z projektu Linux Wacom Project
 Name:		linuxwacom
-Version:	0.9.7
-Release:	1
-License:	GPL/X11
+Version:	0.11.0
+Release:	0.1
+License:	GPL v2+
 Group:		X11
 Source0:	http://downloads.sourceforge.net/linuxwacom/%{name}-%{version}.tar.bz2
-# Source0-md5:	de1103591c51a6dfd4805b93d1513384
+# Source0-md5:	e524592f7140c695b4daf68039bb6e24
 Source1:	%{name}-rules
 URL:		http://linuxwacom.sourceforge.net/
 %if %{with kernel}
@@ -112,13 +112,10 @@ export CFLAGS="-I/usr/include/ncurses %{rpmcflags}"
 %configure \
 	--enable-libwacomcfg \
 	--enable-libwacomxi \
-	--enable-tabletdev \
 	--enable-wacdump \
 	--enable-wacomdrv \
-	--enable-wacomxi \
 	--enable-xidump \
 	--enable-xsetwacom \
-	--with-gtk \
 	--with-tcl \
 	--with-tk \
 	--with-x \
@@ -162,10 +159,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/TkXInput
 %attr(755,root,root) %{_libdir}/TkXInput/libwacomxi.so*
 %{_libdir}/TkXInput/pkgIndex.tcl
-%{_mandir}/man4/*.4*
+%{_mandir}/man4/wacom.4*
+%{_mandir}/man4/xsetwacom.4*
 %attr(755,root,root) %{_libdir}/libwacomcfg.so.0
 %attr(755,root,root) %{_libdir}/xorg/modules/input/wacom_drv.so
-%{_sysconfdir}/udev/rules.d/10-wacom.rules
+/etc/udev/rules.d/10-wacom.rules
 %{_libdir}/hal-setup-wacom
 %{_datadir}/hal/fdi/policy/20thirdparty/10-linuxwacom.fdi
 
