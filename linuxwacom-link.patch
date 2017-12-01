@@ -1,0 +1,8 @@
+--- linuxwacom-0.12.0/src/wacomxi/Makefile.am.orig	2017-04-18 00:21:29.000000000 +0200
++++ linuxwacom-0.12.0/src/wacomxi/Makefile.am	2017-11-30 20:54:20.869824693 +0100
+@@ -14,4 +14,4 @@
+ # Source dependencies
+ libwacomxi_la_SOURCES = wacomxi.c wacomxi.h
+ libwacomxi_la_LDFLAGS = -no-undefined
+-libwacomxi_la_LIBADD = @WCM_WACOMXI_LIBS@
++libwacomxi_la_LIBADD = @WCM_WACOMXI_LIBS@ -ltk -ltcl
