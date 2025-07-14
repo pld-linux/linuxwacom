@@ -115,7 +115,7 @@ Sterownik wejściowy X.org dla tabletów Wacom.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 
 %if %{with kernel}
 cat > src/2.6.30/Makefile << EOF
